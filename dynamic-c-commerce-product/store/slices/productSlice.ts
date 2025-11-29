@@ -1,39 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Product } from '../../interfaces';
+import { Product, ProductState } from '@/interfaces';
+import { initialState } from '@/components/constants/ProductState';
 
-interface ProductState {
-    items: Product[];
-    filteredItems: Product[];
-    categories: string[];
-    loading: boolean;
-    error: string | null;
-    filters: {
-        category: string;
-        search: string;
-    };
-    sort: 'asc' | 'desc' | '';
-    pagination: {
-        currentPage: number;
-        itemsPerPage: number;
-    };
-}
-
-const initialState: ProductState = {
-    items: [],
-    filteredItems: [],
-    categories: [],
-    loading: false,
-    error: null,
-    filters: {
-        category: '',
-        search: '',
-    },
-    sort: '',
-    pagination: {
-        currentPage: 1,
-        itemsPerPage: 8,
-    },
-};
 
 export const fetchProducts = createAsyncThunk(
     'products/fetchProducts',
