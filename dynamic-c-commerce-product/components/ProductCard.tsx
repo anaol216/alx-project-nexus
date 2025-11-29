@@ -2,7 +2,6 @@ import { Product } from '@/interfaces';
 import { ProductCardProps } from '@/interfaces';
 import { Star } from 'lucide-react';
 
-
 export function ProductCard({ product }: ProductCardProps) {
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
