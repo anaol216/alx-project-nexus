@@ -74,17 +74,25 @@ const productSlice = createSlice({
 const applyFiltersAndSort = (state: ProductState) => {
     let result = [...state.items];
 
+    // Apply category filter
     if (state.filters.category) {
-        result = result.filter((item) => item.category === state.filters.category);
+        result = result.filter((item) =>
+            item.category.toLowerCase() === state.filters.category.toLowerCase()
+        );
     }
 
+    // Apply search filter (search in title and category)
     if (state.filters.search) {
-        const query = state.filters.search.toLowerCase();
-        result = result.filter((item) => item.title.toLowerCase().includes(query));
+        const query = state.filters.search.toLowerCase().trim();
+        result = result.filter((item) =>
+            item.title.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query)
+        );
     }
 
+    // Apply sorting
     if (state.sort) {
-        result.sort((a, b) => {
+        result = [...result].sort((a, b) => {
             if (state.sort === 'asc') {
                 return a.price - b.price;
             } else {

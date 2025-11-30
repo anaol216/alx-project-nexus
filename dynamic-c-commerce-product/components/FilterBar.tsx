@@ -1,16 +1,26 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchCategories, setCategoryFilter, setSearchFilter, setSortOrder } from '../store/slices/productSlice';
 
 export function FilterBar() {
     const dispatch = useAppDispatch();
     const { categories, filters, sort } = useAppSelector((state) => state.products);
+    const [searchInput, setSearchInput] = useState(filters.search);
 
     useEffect(() => {
         dispatch(fetchCategories());
     }, [dispatch]);
+
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(setSearchFilter(searchInput));
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchInput, dispatch]);
 
     return (
         <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -19,8 +29,8 @@ export function FilterBar() {
                     type="text"
                     placeholder="Search products..."
                     className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={filters.search}
-                    onChange={(e) => dispatch(setSearchFilter(e.target.value))}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                 />
 
                 <select
