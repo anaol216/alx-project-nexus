@@ -1,14 +1,21 @@
 'use client';
 
 import { ShoppingCart, Search, User, Menu } from 'lucide-react';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { toggleCart } from '../store/slices/cartSlice';
 
 interface HeaderProps {
     onMenuToggle: () => void;
 }
 
 export function Header({ onMenuToggle }: HeaderProps) {
-    const [cartCount] = useState(0);
+    const dispatch = useAppDispatch();
+    const { items } = useAppSelector((state) => state.cart);
+    const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+    const handleCartClick = () => {
+        dispatch(toggleCart());
+    };
 
     return (
         <header className="bg-white shadow-md sticky top-0 z-50">
@@ -44,7 +51,10 @@ export function Header({ onMenuToggle }: HeaderProps) {
                         <button className="p-2 rounded-full hover:bg-gray-100 relative">
                             <User className="w-6 h-6 text-gray-600" />
                         </button>
-                        <button className="p-2 rounded-full hover:bg-gray-100 relative">
+                        <button
+                            onClick={handleCartClick}
+                            className="p-2 rounded-full hover:bg-gray-100 relative"
+                        >
                             <ShoppingCart className="w-6 h-6 text-gray-600" />
                             {cartCount > 0 && (
                                 <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">

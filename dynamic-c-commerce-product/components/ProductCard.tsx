@@ -1,8 +1,16 @@
 import { Product } from '@/interfaces';
 import { ProductCardProps } from '@/interfaces';
 import { Star } from 'lucide-react';
+import { useAppDispatch } from '../store/hooks';
+import { addToCart } from '../store/slices/cartSlice';
 
 export function ProductCard({ product }: ProductCardProps) {
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = () => {
+        dispatch(addToCart(product));
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
             <div className="relative h-48 w-full p-4 flex items-center justify-center bg-gray-50">
@@ -25,7 +33,10 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
                 <div className="mt-auto flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-                    <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors">
+                    <button
+                        onClick={handleAddToCart}
+                        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors cursor-pointer"
+                    >
                         Add to Cart
                     </button>
                 </div>

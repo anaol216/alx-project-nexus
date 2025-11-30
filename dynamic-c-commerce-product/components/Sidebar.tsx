@@ -7,14 +7,27 @@ import { setCategoryFilter } from '../store/slices/productSlice';
 interface SidebarProps {
     isOpen: boolean;
     onClose: () => void;
+    activeView: string;
+    onViewChange: (view: string) => void;
 }
 
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar({ isOpen, onClose, activeView, onViewChange }: SidebarProps) {
     const dispatch = useAppDispatch();
     const { categories, filters } = useAppSelector((state) => state.products);
 
     const handleCategoryClick = (category: string) => {
         dispatch(setCategoryFilter(category));
+        onViewChange('products');
+        if (window.innerWidth < 1024) {
+            onClose();
+        }
+    };
+
+    const handleMenuClick = (view: string) => {
+        onViewChange(view);
+        if (view === 'products') {
+            dispatch(setCategoryFilter(''));
+        }
         if (window.innerWidth < 1024) {
             onClose();
         }
@@ -53,76 +66,90 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 </h3>
                                 <ul className="space-y-2">
                                     <li>
-                                        <a
-                                            href="#"
-                                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                        <button
+                                            onClick={() => handleMenuClick('home')}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeView === 'home'
+                                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                                                }`}
                                         >
                                             <Home className="w-5 h-5" />
                                             <span>Home</span>
-                                        </a>
+                                        </button>
                                     </li>
                                     <li>
-                                        <a
-                                            href="#"
-                                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                        <button
+                                            onClick={() => handleMenuClick('products')}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeView === 'products'
+                                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                                                }`}
                                         >
                                             <ShoppingBag className="w-5 h-5" />
                                             <span>Products</span>
-                                        </a>
+                                        </button>
                                     </li>
                                     <li>
-                                        <a
-                                            href="#"
-                                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                        <button
+                                            onClick={() => handleMenuClick('wishlist')}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeView === 'wishlist'
+                                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                                                }`}
                                         >
                                             <Heart className="w-5 h-5" />
                                             <span>Wishlist</span>
-                                        </a>
+                                        </button>
                                     </li>
                                     <li>
-                                        <a
-                                            href="#"
-                                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                        <button
+                                            onClick={() => handleMenuClick('settings')}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeView === 'settings'
+                                                    ? 'bg-blue-50 text-blue-600 font-medium'
+                                                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                                                }`}
                                         >
                                             <Settings className="w-5 h-5" />
                                             <span>Settings</span>
-                                        </a>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>
 
-                            {/* Categories */}
-                            <div>
-                                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                                    Categories
-                                </h3>
-                                <ul className="space-y-2">
-                                    <li>
-                                        <button
-                                            onClick={() => handleCategoryClick('')}
-                                            className={`w-full text-left px-3 py-2 rounded-lg transition-colors capitalize ${filters.category === ''
-                                                    ? 'bg-blue-50 text-blue-600 font-medium'
-                                                    : 'text-gray-700 hover:bg-gray-100'
-                                                }`}
-                                        >
-                                            All Products
-                                        </button>
-                                    </li>
-                                    {categories.map((category) => (
-                                        <li key={category}>
+                            {/* Categories - Only show when in products view */}
+                            {activeView === 'products' && (
+                                <div>
+                                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                                        Categories
+                                    </h3>
+                                    <ul className="space-y-2">
+                                        <li>
                                             <button
-                                                onClick={() => handleCategoryClick(category)}
-                                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors capitalize ${filters.category === category
+                                                onClick={() => handleCategoryClick('')}
+                                                className={`w-full text-left px-3 py-2 rounded-lg transition-colors capitalize ${filters.category === ''
                                                         ? 'bg-blue-50 text-blue-600 font-medium'
                                                         : 'text-gray-700 hover:bg-gray-100'
                                                     }`}
                                             >
-                                                {category}
+                                                All Products
                                             </button>
                                         </li>
-                                    ))}
-                                </ul>
-                            </div>
+                                        {categories.map((category) => (
+                                            <li key={category}>
+                                                <button
+                                                    onClick={() => handleCategoryClick(category)}
+                                                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors capitalize ${filters.category === category
+                                                            ? 'bg-blue-50 text-blue-600 font-medium'
+                                                            : 'text-gray-700 hover:bg-gray-100'
+                                                        }`}
+                                                >
+                                                    {category}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </nav>
                 </div>
