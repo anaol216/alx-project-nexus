@@ -1,0 +1,6 @@
+{
+    "buildCommand": "cd dynamic-c-commerce-product && npm run build",
+    "outputDirectory": "dynamic-c-commerce-product/.next",
+    "devCommand": "cd dynamic-c-commerce-product && npm run dev",
+    "installCommand": "cd dynamic-c-commerce-product && npm install"
+}
